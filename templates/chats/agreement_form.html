@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Фиксация договорённости — GreenBridge{% endblock %}
+
+{% block body_class %}agreement-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/chats/agreement.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="agreement-page">
+    <div class="agreement-page__container">
+        <div class="form-surface agreement-page__surface">
+            <span class="page-eyebrow">Подтверждение условий</span>
+            <h1>Зафиксировать договорённость</h1>
+            <p class="agreement-page__intro">Укажите сумму, дату поставки и условия. После отправки вторая сторона сможет подтвердить или отменить договорённость.</p>
+
+            {% if form.errors %}<div class="form-errors" role="alert">{{ form.errors }}</div>{% endif %}
+
+            <form method="post" class="agreement-page__form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.amount.id_for_label }}">Сумма сделки</label>
+                    {{ form.amount }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.delivery_date.id_for_label }}">Дата поставки</label>
+                    {{ form.delivery_date }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.terms.id_for_label }}">Условия</label>
+                    {{ form.terms }}
+                </div>
+                <button type="submit" class="button button--primary">Отправить на подтверждение</button>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

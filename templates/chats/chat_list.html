@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои переговоры — GreenBridge{% endblock %}
+
+{% block body_class %}chat-list-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/chats/list.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="chat-list-page">
+    <div class="container">
+        <header class="chat-list-page__header">
+            <span class="page-eyebrow">Переговоры</span>
+            <h1>Мои переговоры</h1>
+            <p>История активных диалогов с компаниями по товарам и условиям сотрудничества.</p>
+        </header>
+
+        <div class="chat-list-page__items">
+            {% for item in chat_items %}
+                <a href="{% url 'chat_detail' item.conversation.id %}" class="chat-list-page__conversation">
+                    <div class="chat-list-page__conversation-top">
+                        <div class="chat-list-page__mark" aria-hidden="true">
+                            {% if request.user == item.conversation.buyer %}
+                                {{ item.conversation.supplier.company.name|slice:":2" }}
+                            {% else %}
+                                {{ item.conversation.buyer.company.name|slice:":2" }}
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <span class="chat-list-page__product">{{ item.conversation.product.title }}</span>
+                            <h2>
+                                {% if request.user == item.conversation.buyer %}
+                                    {{ item.conversation.supplier.company.name }}
+                                {% else %}
+                                    {{ item.conversation.buyer.company.name }}
+                                {% endif %}
+                            </h2>
+                            <p class="chat-list-page__meta">Создан: {{ item.conversation.created_at|date:"d.m.Y H:i" }}</p>
+                            {% if item.latest_message_text %}
+                                <p class="chat-list-page__last-message">{{ item.latest_message_text|truncatechars:80 }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="chat-list-page__conversation-footer">
+                        <span class="chat-list-page__status">
+                            {{ item.latest_agreement_label }}
+                        </span>
+                        <span class="chat-list-page__open">Открыть →</span>
+                    </div>
+                </a>
+            {% empty %}
+                <section class="empty-state">
+                    <h2>Пока нет активных переговоров</h2>
+                    <p>Свяжитесь с поставщиком из каталога, чтобы начать деловое взаимодействие.</p>
+                    <a href="{% url 'product_list' %}" class="button button--primary">Перейти в каталог</a>
+                </section>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

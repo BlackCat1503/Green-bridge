@@ -1,0 +1,216 @@
+.analytics-page {
+    padding-block: 80px;
+}
+
+.analytics-page .page-head {
+    margin-bottom: 34px;
+}
+
+.analytics-page .page-head h1 {
+    margin-bottom: 14px;
+    font-size: clamp(2.625rem, 5vw, 4rem);
+    line-height: 1.08;
+}
+
+.analytics-page .page-head p {
+    max-width: 680px;
+    color: var(--color-muted);
+    font-size: 1.0625rem;
+}
+
+.analytics-page .analytics-page__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.analytics-page .analytics-page__metric,
+.analytics-page .analytics-panel {
+    position: relative;
+    overflow: hidden;
+    padding: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: 30px;
+    background: var(--color-surface);
+    box-shadow: 0 14px 35px rgba(31, 42, 36, 0.05);
+}
+
+.analytics-page .analytics-page__metric::before,
+.analytics-page .analytics-panel::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, var(--color-brand), #5b9a74);
+    content: '';
+}
+
+.analytics-page .analytics-page__metric span {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--color-muted);
+    font-weight: 700;
+}
+
+.analytics-page .analytics-page__metric strong {
+    display: block;
+    color: var(--color-brand);
+    font-size: 2.875rem;
+}
+
+.analytics-page .analytics-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 28px;
+    margin-bottom: 28px;
+}
+
+.analytics-page .analytics-panel h2 {
+    margin-bottom: 22px;
+    font-size: 1.875rem;
+}
+
+.analytics-page .analytics-panel > p,
+.analytics-page .analytics-row span {
+    color: var(--color-muted);
+}
+
+.analytics-page .deal-status-list,
+.analytics-page .analytics-table,
+.analytics-page .demand-chart {
+    display: grid;
+    gap: 14px;
+}
+
+.analytics-page .deal-status-list > div,
+.analytics-page .analytics-row,
+.analytics-page .demand-chart-row {
+    padding: 18px;
+    border-radius: var(--radius-medium);
+    background: var(--color-page);
+}
+
+.analytics-page .deal-status-list > div,
+.analytics-page .analytics-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.analytics-page .deal-status-list strong,
+.analytics-page .analytics-row > div:last-child,
+.analytics-page .review-analytics strong {
+    color: var(--color-brand);
+}
+
+.analytics-page .deal-status-list strong {
+    font-size: 1.75rem;
+}
+
+.analytics-page .analytics-row strong {
+    display: block;
+    font-size: 1.125rem;
+}
+
+.analytics-page .analytics-row > div:last-child {
+    font-size: 1.125rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.analytics-page .review-analytics {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.analytics-page .review-analytics strong {
+    font-size: 3.375rem;
+}
+
+.analytics-page .review-analytics span {
+    color: var(--color-muted);
+    font-weight: 700;
+}
+
+.analytics-page .demand-chart-row {
+    display: grid;
+    gap: 10px;
+}
+
+.analytics-page .demand-chart-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.analytics-page .demand-chart-head strong {
+    display: block;
+    font-size: 1.125rem;
+}
+
+.analytics-page .demand-chart-head span {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+}
+
+.analytics-page .demand-chart-value {
+    color: var(--color-brand);
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.analytics-page .demand-chart-track,
+.analytics-page .demand-chart-bar {
+    width: 100%;
+    height: 14px;
+    border-radius: 999px;
+}
+
+.analytics-page .demand-chart-track {
+    overflow: hidden;
+    background: #dfe9e2;
+}
+
+.analytics-page .demand-chart-bar {
+    border: 0;
+    accent-color: var(--color-brand);
+}
+
+.analytics-page--buyer .analytics-page__metric strong,
+.analytics-page--buyer .analytics-row > div:last-child,
+.analytics-page--buyer .deal-status-list strong {
+    color: #2f6b7d;
+}
+
+.analytics-page--buyer .analytics-page__metric::before,
+.analytics-page--buyer .analytics-panel::before {
+    background: linear-gradient(90deg, #2f6b7d, #73a7b8);
+}
+
+.analytics-page--buyer .demand-chart-bar {
+    accent-color: #2f6b7d;
+}
+
+@media (max-width: 1000px) {
+    .analytics-page .analytics-page__metrics,
+    .analytics-page .analytics-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 700px) {
+    .analytics-page .analytics-page__metrics,
+    .analytics-page .analytics-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-page .analytics-row,
+    .analytics-page .demand-chart-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

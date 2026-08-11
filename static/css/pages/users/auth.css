@@ -1,0 +1,141 @@
+.auth-page,
+.auth-section {
+    padding-block: 90px;
+}
+
+.auth-page .auth-container {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 460px);
+    align-items: center;
+    gap: 56px;
+}
+
+.auth-page .auth-info h1,
+.auth-section .auth-page__surface h1 {
+    margin: 20px 0;
+    font-size: clamp(2.625rem, 5vw, 4rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+}
+
+.auth-page .auth-info p,
+.auth-section .review-intro {
+    max-width: 620px;
+    color: var(--color-muted);
+    font-size: 1.125rem;
+}
+
+.auth-page .auth-page__surface,
+.auth-section .auth-page__surface {
+    padding: 34px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-large);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-surface);
+}
+
+.auth-page .auth-page__surface h2 {
+    margin-bottom: 24px;
+    font-size: 1.875rem;
+}
+
+.auth-page .form-fields p {
+    margin-bottom: 18px;
+}
+
+.auth-page .form-fields label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.auth-page .form-fields ul {
+    margin: 8px 0 16px 18px;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+}
+
+.auth-page .auth-page__surface .button,
+.auth-section .auth-page__surface .button {
+    width: 100%;
+}
+
+.auth-page .auth-note {
+    margin: 22px 0 0;
+    color: var(--color-muted);
+    text-align: center;
+}
+
+.auth-page .auth-note a {
+    color: var(--color-brand);
+    font-weight: 800;
+}
+
+.auth-section .auth-page__surface {
+    width: min(720px, 100%);
+    margin-inline: auto;
+    padding: 52px;
+}
+
+.auth-section .auth-page__surface form {
+    display: grid;
+    gap: 18px;
+}
+
+.auth-section input[name='code'] {
+    width: 100%;
+    height: 62px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding-inline: 22px;
+    color: var(--color-text);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.5em;
+    text-align: center;
+}
+
+.auth-section input[name='code']:focus {
+    border-color: var(--color-brand);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(47, 111, 78, 0.1);
+}
+
+.auth-section .review-intro {
+    margin-bottom: 34px;
+}
+
+.auth-section .review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.auth-section .review-form .form-field {
+    margin: 0;
+}
+
+.auth-section .auth-alert {
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+    font-weight: 600;
+}
+
+@media (max-width: 900px) {
+    .auth-page .auth-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .auth-page,
+    .auth-section {
+        padding-block: 60px;
+    }
+
+    .auth-section .auth-page__surface {
+        padding: 34px 24px;
+    }
+}

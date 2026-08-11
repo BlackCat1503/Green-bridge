@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — GreenBridge{% endblock %}
+
+{% block body_class %}product-editor-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/products/manage.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="product-editor-page">
+    <div class="container">
+        <header class="product-editor-page__header">
+            <span class="page-eyebrow">Кабинет поставщика</span>
+            <h1>{{ title }}</h1>
+            <p>Заполните данные о продукции, цене и условиях поставки.</p>
+        </header>
+
+        <div class="form-surface product-editor-page__form">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="product-editor-page__fields">
+                    {% for field in form %}
+                        {% if field.name == 'description' %}
+                            <div class="form-field product-editor-page__field product-editor-page__field--wide">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                            </div>
+                        {% elif field.name == 'image' %}
+                            <div class="form-field product-editor-page__field product-editor-page__field--wide">
+                                {{ field.label_tag }}
+                                {% if form.instance.image %}
+                                    <div class="product-editor-page__image-current">
+                                        <img src="{{ form.instance.image.url }}" alt="{{ form.instance.title|default:'Текущее фото' }}">
+                                        <div>
+                                            <strong>Текущее фото</strong>
+                                            <span>{{ form.instance.image.name|cut:"products/" }}</span>
+                                        </div>
+                                    </div>
+                                    <label class="product-editor-page__toggle">
+                                        <input type="checkbox" name="{{ field.html_name }}-clear" id="{{ field.id_for_label }}_clear">
+                                        <span class="product-editor-page__toggle-text">
+                                            <strong>Удалить текущее фото</strong>
+                                            <small>Отметьте, если хотите убрать изображение из карточки.</small>
+                                        </span>
+                                    </label>
+                                {% endif %}
+                                <div class="file-upload-simple">
+                                    <input type="file" name="{{ field.html_name }}" id="{{ field.id_for_label }}" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                                </div>
+                                {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                            </div>
+                        {% elif field.name == 'is_active' %}
+                            <div class="form-field product-editor-page__field product-editor-page__field--wide">
+                                <label class="product-editor-page__toggle">
+                                    <input type="checkbox" name="{{ field.html_name }}" id="{{ field.id_for_label }}" {% if field.value %}checked{% endif %}>
+                                    <span class="product-editor-page__toggle-text">
+                                        <strong>Опубликовать предложение</strong>
+                                        <small>Если выключить, товар будет скрыт из каталога.</small>
+                                    </span>
+                                </label>
+                                {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="form-field product-editor-page__field">
+                                {{ field.label_tag }}
+                                {{ field }}
+                                {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="button button--primary">{{ button_text }}</button>
+                    <a href="{% url 'my_products' %}" class="button button--secondary">Отмена</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}

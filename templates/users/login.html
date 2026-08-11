@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Вход — GreenBridge{% endblock %}
+
+{% block body_class %}auth-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/users/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="container auth-container">
+        <header class="auth-info">
+            <span class="page-eyebrow">Вход</span>
+            <h1>Войдите в личный кабинет</h1>
+            <p>Управляйте профилем компании, товарами, контактами и взаимодействием с партнёрами.</p>
+        </header>
+
+        <div class="auth-page__surface">
+            <h2>Вход</h2>
+            <form method="post">
+                {% csrf_token %}
+                {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+                {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+                <div class="form-fields">{{ form.as_p }}</div>
+                <button type="submit" class="button button--primary">Войти</button>
+            </form>
+            <p class="auth-note">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</section>
+{% endblock %}

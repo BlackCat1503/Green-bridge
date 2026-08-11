@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ company.name }} — GreenBridge{% endblock %}
+
+{% block body_class %}company-profile-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/users/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="company-profile-page">
+    <div class="container">
+
+        <div class="company-profile-page__header">
+
+            <div class="company-profile-image">
+                {% if company.logo %}
+                    <img src="{{ company.logo.url }}" alt="{{ company.name }}">
+                {% else %}
+                    <div class="company-profile-placeholder">
+                        {{ company.name|slice:":2" }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="company-profile-info">
+                <span class="page-eyebrow">
+                    {% if company.company_type == 'supplier' %}
+                        Профиль поставщика
+                    {% else %}
+                        Профиль покупателя
+                    {% endif %}
+                </span>
+
+                <h1>{{ company.name }}</h1>
+
+                <div class="company-profile-meta">
+                    <div>
+                        <span>Регион</span>
+                        <strong>{{ company.region|default:"Не указан" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>На платформе</span>
+                        <strong>с {{ company.created_at|date:"Y" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Рейтинг</span>
+                        <strong>
+                            {% if rating %}
+                                {{ rating }} ★ / {{ reviews_count }} отзывов
+                            {% else %}
+                                Пока не сформирован
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+
+                <div class="company-profile-actions">
+                    {% if company.company_type == 'supplier' %}
+                        <a href="{% url 'product_list' %}?company={{ company.id }}" class="button button--primary">
+                            Посмотреть предложения
+                        </a>
+                    {% endif %}
+                    <a href="{% url 'product_list' %}" class="button button--secondary">
+                        Вернуться в каталог
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="profile-stats-row">
+            <div class="company-profile-page__stat">
+                <span>Завершённые сделки</span>
+                <strong>{{ completed_deals_count }}</strong>
+                <small>все сделки со статусом «завершена»</small>
+            </div>
+
+            <div class="company-profile-page__stat">
+                <span>Успешность</span>
+                <strong>{{ success_rate }}%</strong>
+                <small>завершённые к завершённым и отменённым компанией</small>
+            </div>
+
+            <div class="company-profile-page__stat">
+                <span>Рейтинг</span>
+                <strong>{{ rating_display }} ★</strong>
+                <small>Средняя оценка компании</small>
+                <div class="profile-rating-meta">На основе {{ reviews_count }} отзывов</div>
+            </div>
+        </div>
+
+        <div class="company-profile-page__columns">
+            <section class="company-profile-block">
+                <h2>О компании</h2>
+
+                {% if company.description %}
+                    <p>{{ company.description }}</p>
+                {% else %}
+                    <p>
+                        Компания пока не добавила подробное описание.
+                        Информация будет обновлена после заполнения профиля.
+                    </p>
+                {% endif %}
+            </section>
+
+            <section class="company-profile-block">
+                <h2>Условия сотрудничества</h2>
+
+                <div class="conditions-list">
+                    <div>
+                        <span>Контактное лицо</span>
+                        <strong>{{ company.contact_person|default:"Не указано" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Контакты</span>
+                        <strong>{{ company.phone|default:company.contacts|default:"Не указаны" }}</strong>
+                    </div>
+
+                    <div>
+                        <span>Сайт</span>
+                        <strong>
+                            {% if company.website %}
+                                <a href="{{ company.website }}" target="_blank" rel="noopener noreferrer">{{ company.website }}</a>
+                            {% else %}
+                                Не указан
+                            {% endif %}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <span>Формат работы</span>
+                        <strong>
+                            {% if company.company_type == 'supplier' %}
+                                Публикация предложений
+                            {% else %}
+                                Поиск поставщиков
+                            {% endif %}
+                        </strong>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="company-profile-page__columns second">
+            <section class="company-profile-block company-stream-block">
+                <div class="company-block-head">
+                    <div>
+                        <span class="company-block-kicker">Репутация</span>
+                        <h2>Отзывы о взаимодействии</h2>
+                    </div>
+                    <span class="company-block-counter">{{ reviews_count }}</span>
+                </div>
+
+                {% if reviews %}
+                    <div class="company-block-scroll{% if reviews_count > 3 %} is-scrollable{% endif %}">
+                        <div class="reviews-list profile-reviews-list">
+                            {% for review in reviews %}
+                                {% include 'includes/review_item.html' with review=review show_product=True %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="review-empty">
+                        Отзывы появятся после подтверждённых договорённостей между компаниями.
+                    </div>
+                {% endif %}
+            </section>
+
+            <section class="company-profile-block company-stream-block">
+                <div class="company-block-head">
+                    <div>
+                        <span class="company-block-kicker">Каталог</span>
+                        <h2>Предложения компании</h2>
+                    </div>
+                    <span class="company-block-counter">{{ products_count }}</span>
+                </div>
+
+                {% if products %}
+                    <div class="company-block-scroll{% if products_count > 3 %} is-scrollable{% endif %}">
+                        <div class="profile-products-list">
+                            {% for product in products %}
+                                <a href="{% url 'product_detail' product.id %}" class="profile-product-item">
+                                    <div>
+                                        <span>
+                                            {% if product.category %}
+                                                {{ product.category.name }}
+                                            {% else %}
+                                                Без категории
+                                            {% endif %}
+                                        </span>
+                                        <strong>{{ product.title }}</strong>
+                                        <p>{{ product.price }} ₽ / {{ product.get_unit_display }}</p>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="review-empty">
+                        У компании пока нет активных предложений.
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,215 @@
+.catalog-page__intro {
+    padding: 70px 0 35px;
+}
+
+.catalog-page__intro h1 {
+    max-width: 820px;
+    margin-bottom: 18px;
+    font-size: clamp(2.375rem, 5vw, 3.625rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+}
+
+.catalog-page__intro p {
+    max-width: 680px;
+    margin-bottom: 0;
+    color: var(--color-muted);
+    font-size: 1.125rem;
+}
+
+.catalog-page__content {
+    padding: 35px 0 90px;
+}
+
+.catalog-page__layout {
+    display: grid;
+    grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
+    align-items: start;
+    gap: 34px;
+}
+
+.catalog-page__filter-panel {
+    position: sticky;
+    top: 100px;
+    padding: 28px;
+    border: 1px solid var(--color-border);
+    border-radius: 28px;
+    background: var(--color-surface);
+    box-shadow: 0 14px 35px rgba(31, 42, 36, 0.05);
+}
+
+.catalog-page__filter-panel h2 {
+    margin-bottom: 22px;
+    font-size: 1.5rem;
+}
+
+.catalog-page__filters {
+    display: grid;
+    gap: 18px;
+}
+
+.catalog-page__filters .filter-field {
+    margin: 0;
+}
+
+.catalog-page__price-range {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.catalog-page__price-range legend {
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.catalog-page__price-inputs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.catalog-page__price-inputs label {
+    margin-bottom: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.catalog-page__results {
+    min-width: 0;
+}
+
+.catalog-page__result-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 26px;
+}
+
+.catalog-page__result-summary h2 {
+    margin: 0;
+    font-size: 1.875rem;
+}
+
+.catalog-page__result-summary p {
+    margin: 0;
+    color: var(--color-muted);
+    font-weight: 700;
+}
+
+.catalog-page__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.catalog-page__offer {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 28px;
+    background: var(--color-surface);
+    box-shadow: 0 14px 35px rgba(31, 42, 36, 0.05);
+}
+
+.catalog-page__image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 220px;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    font-weight: 700;
+}
+
+.catalog-page__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.catalog-page__offer-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+    padding: 22px;
+}
+
+.catalog-page__category {
+    align-self: flex-start;
+    margin-bottom: 14px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    font-size: 0.8125rem;
+    font-weight: 800;
+}
+
+.catalog-page__offer h3 {
+    margin-bottom: 10px;
+    font-size: 1.375rem;
+}
+
+.catalog-page__description {
+    margin-bottom: 18px;
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+}
+
+.catalog-page__meta {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 20px;
+    color: var(--color-muted);
+    font-size: 0.875rem;
+}
+
+.catalog-page__meta a {
+    color: var(--color-brand);
+    font-weight: 700;
+}
+
+.catalog-page__price {
+    margin: auto 0 18px;
+    color: var(--color-brand);
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.catalog-page__actions {
+    display: grid;
+    gap: 12px;
+}
+
+.catalog-page__actions .button {
+    width: 100%;
+}
+
+@media (max-width: 1100px) {
+    .catalog-page__list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 850px) {
+    .catalog-page__layout {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-page__filter-panel {
+        position: static;
+    }
+}
+
+@media (max-width: 620px) {
+    .catalog-page__list {
+        grid-template-columns: 1fr;
+    }
+
+    .catalog-page__result-summary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}

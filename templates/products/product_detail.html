@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.title }} — GreenBridge{% endblock %}
+
+{% block body_class %}product-detail-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/products/detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="product-detail-page">
+    <div class="container">
+        <div class="product-detail-page__layout">
+            <div class="product-detail-page__image">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.title }}">
+                {% else %}
+                    <div class="product-detail-page__image-placeholder">Нет изображения</div>
+                {% endif %}
+            </div>
+
+            <div class="product-detail-page__info">
+                <span class="product-detail-page__category">{{ product.category.name|default:'Без категории' }}</span>
+                <h1>{{ product.title }}</h1>
+                <p class="product-detail-page__price">{{ product.price }} ₽ / {{ product.get_unit_display }}</p>
+                <p class="product-detail-page__description">{{ product.description }}</p>
+
+                <div class="product-detail-page__facts">
+                    <div class="product-detail-page__fact">
+                        <span>Поставщик</span>
+                        <a href="{% url 'company_profile' product.company.id %}"><strong>{{ product.company.name }}</strong></a>
+                    </div>
+                    <div class="product-detail-page__fact">
+                        <span>Регион</span>
+                        <strong>{{ product.region }}</strong>
+                    </div>
+                    <div class="product-detail-page__fact">
+                        <span>Минимальный заказ</span>
+                        <strong>{{ product.min_order }} {{ product.get_unit_display }}</strong>
+                    </div>
+                    <div class="product-detail-page__fact">
+                        <span>Рейтинг товара</span>
+                        <strong>{% if rating %}{{ rating }} ★ / {{ reviews_count }} отзывов{% else %}Пока нет отзывов{% endif %}</strong>
+                    </div>
+                </div>
+
+                {% if request.user.is_authenticated and request.user.company.company_type == 'buyer' %}
+                    <div class="product-detail-page__actions">
+                        <form method="post" action="{% url 'start_chat' product.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="button button--primary">Связаться с поставщиком</button>
+                        </form>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <section class="product-detail-page__section" aria-labelledby="supplier-title">
+            <h2 id="supplier-title">О поставщике</h2>
+            <div class="product-detail-page__supplier">
+                <div class="product-detail-page__supplier-header">
+                    <div class="product-detail-page__supplier-mark" aria-hidden="true">{{ product.company.name|slice:":2" }}</div>
+                    <div>
+                        <span class="product-detail-page__supplier-label">Поставщик</span>
+                        <h3>{{ product.company.name }}</h3>
+                        <p>{{ product.company.description|default:"Поставщик пока не добавил подробное описание компании." }}</p>
+                    </div>
+                </div>
+
+                <div class="product-detail-page__supplier-facts">
+                    <div class="product-detail-page__supplier-fact"><span>Регион</span><strong>{{ product.company.region|default:product.region }}</strong></div>
+                    <div class="product-detail-page__supplier-fact"><span>Контакт</span><strong>{{ product.company.contact_person|default:"Не указан" }}</strong></div>
+                    <div class="product-detail-page__supplier-fact"><span>Связь</span><strong>{{ product.company.contacts|default:"Не указаны" }}</strong></div>
+                    <div class="product-detail-page__supplier-fact"><span>Email</span><strong>{{ product.company.email|default:"Не указан" }}</strong></div>
+                </div>
+
+                <a href="{% url 'company_profile' product.company.id %}" class="button button--secondary">Открыть профиль поставщика</a>
+            </div>
+        </section>
+
+        <section class="product-detail-page__section" aria-labelledby="product-reviews-title">
+            <h2 id="product-reviews-title">Отзывы о товаре</h2>
+            {% if reviews %}
+                <div class="product-detail-page__reviews">
+                    {% for review in reviews %}
+                        {% include 'includes/review_item.html' with review=review %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="product-detail-page__review-empty">У этого товара пока нет отзывов.</div>
+            {% endif %}
+        </section>
+    </div>
+</section>
+{% endblock %}

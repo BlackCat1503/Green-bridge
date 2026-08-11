@@ -1,0 +1,74 @@
+.container {
+    width: min(var(--content-width), 92%);
+    margin-inline: auto;
+}
+
+.page-section {
+    padding-block: 80px;
+}
+
+.page-eyebrow {
+    display: inline-flex;
+    margin-bottom: 16px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+    font-size: 0.875rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+.content-surface {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-large);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-surface);
+}
+
+.empty-state {
+    padding: 40px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-large);
+    background: var(--color-surface);
+    text-align: center;
+}
+
+.empty-state h2,
+.empty-state h3 {
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    margin-bottom: 24px;
+    color: var(--color-muted);
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.pagination a {
+    color: var(--color-brand);
+    font-weight: 800;
+}
+
+@media (max-width: 640px) {
+    .page-section {
+        padding-block: 56px;
+    }
+}

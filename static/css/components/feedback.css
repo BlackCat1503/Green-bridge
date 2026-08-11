@@ -1,0 +1,16 @@
+.flash-messages {
+    padding-top: 20px;
+}
+
+.flash-message {
+    margin-bottom: 10px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: #edf7ef;
+    color: #1f613d;
+}
+
+.flash-message--error {
+    background: var(--color-danger-soft);
+    color: var(--color-danger);
+}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Мои предложения — GreenBridge{% endblock %}
+
+{% block body_class %}products-manage-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/products/manage.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="products-manage-page">
+    <div class="container">
+        <header class="products-manage-page__header">
+            <span class="page-eyebrow">Кабинет поставщика</span>
+            <h1>Мои предложения</h1>
+            <p>Управляйте товарами, меняйте условия поставки и актуальность предложений.</p>
+            <a href="{% url 'product_create' %}" class="button button--primary">Создать предложение</a>
+        </header>
+
+        <div class="products-manage-page__list">
+            {% for product in products %}
+                <article class="products-manage-page__item">
+                    <div>
+                        <span class="products-manage-page__category">{{ product.category.name|default:"Без категории" }}</span>
+                        <h2>{{ product.title }}</h2>
+                        <p>{{ product.description|truncatewords:18 }}</p>
+                        <div class="products-manage-page__meta">
+                            <span>{{ product.region }}</span>
+                            <span>{{ product.price }} ₽ / {{ product.get_unit_display }}</span>
+                            <span>{% if product.is_active %}Активно{% else %}Скрыто{% endif %}</span>
+                        </div>
+                    </div>
+
+                    <div class="products-manage-page__actions">
+                        <a href="{% url 'product_edit' product.id %}" class="button button--secondary">Редактировать</a>
+                        {% if product.is_active %}
+                            <form method="post" action="{% url 'archive_product' product.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="button button--outline">Снять с публикации</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </article>
+            {% empty %}
+                <section class="empty-state">
+                    <h2>Пока нет предложений</h2>
+                    <p>Создайте первое предложение, чтобы оно появилось в каталоге.</p>
+                    <a href="{% url 'product_create' %}" class="button button--primary">Добавить товар</a>
+                </section>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

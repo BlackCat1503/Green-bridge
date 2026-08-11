@@ -1,0 +1,29 @@
+.site-footer {
+    margin-top: 80px;
+    padding-block: 70px;
+    border-top: 1px solid var(--color-border);
+}
+
+.site-footer__content {
+    max-width: 700px;
+    margin-inline: auto;
+    text-align: center;
+}
+
+.site-footer__title {
+    margin-bottom: 30px;
+    font-size: 2.625rem;
+}
+
+.site-footer__contacts {
+    display: grid;
+    gap: 18px;
+    margin-bottom: 35px;
+    color: var(--color-muted);
+    font-size: 1.125rem;
+}
+
+.site-footer__copyright {
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+}

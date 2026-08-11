@@ -1,0 +1,144 @@
+.register-page {
+    padding-block: 80px;
+}
+
+.register-page .register-container {
+    max-width: 980px;
+}
+
+.register-page .register-head {
+    margin-bottom: 38px;
+}
+
+.register-page .register-head h1 {
+    margin-bottom: 20px;
+    font-size: clamp(3rem, 7vw, 4.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+}
+
+.register-page .register-head p {
+    max-width: 720px;
+    color: var(--color-muted);
+    font-size: 1.25rem;
+}
+
+.register-page .register-form {
+    display: grid;
+    gap: 18px;
+}
+
+.register-page .form-row {
+    display: grid;
+    gap: 8px;
+}
+
+.register-page .form-row input {
+    width: 100%;
+    height: 58px;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    padding-inline: 18px;
+    background: var(--color-surface);
+}
+
+.register-page .form-row input:focus {
+    border-color: var(--color-brand);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(47, 111, 78, 0.1);
+}
+
+.register-page .form-row--two,
+.register-page .register-page__role-options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.register-page .register-page__section-title {
+    display: block;
+    margin-bottom: 14px;
+    color: var(--color-muted);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+}
+
+.register-page .register-page__role {
+    position: relative;
+    display: block;
+    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 24px;
+    background: var(--color-surface);
+    cursor: pointer;
+}
+
+.register-page .register-page__role:has(input:checked) {
+    border-color: var(--color-brand);
+    background: var(--color-brand-soft);
+    box-shadow: 0 0 0 3px rgba(47, 111, 78, 0.08);
+}
+
+.register-page .register-page__role input {
+    position: absolute;
+    opacity: 0;
+}
+
+.register-page .register-page__role strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 1.375rem;
+}
+
+.register-page .register-page__role strong + span {
+    display: block;
+    margin: 0;
+    color: var(--color-muted);
+}
+
+.register-page .register-page__company-data {
+    display: grid;
+    gap: 18px;
+    padding: 30px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-large);
+    background: rgba(255, 255, 255, 0.45);
+}
+
+.register-page .register-page__agreement {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-height: 58px;
+    padding: 18px;
+    border: 1px solid var(--color-border);
+    border-radius: 20px;
+    background: var(--color-surface);
+}
+
+.register-page .register-page__agreement input {
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    accent-color: var(--color-brand);
+}
+
+.register-page .register-page__submit {
+    justify-self: start;
+    margin-top: 2px;
+}
+
+@media (max-width: 760px) {
+    .register-page .form-row--two,
+    .register-page .register-page__role-options {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .register-page .register-page__submit {
+        width: 100%;
+    }
+}

@@ -1,0 +1,38 @@
+.agreement-page {
+    padding-block: 90px;
+}
+
+.agreement-page__container {
+    width: min(760px, 92%);
+    margin-inline: auto;
+}
+
+.agreement-page__surface {
+    padding: 42px;
+}
+
+.agreement-page__surface h1 {
+    margin: 18px 0 20px;
+    font-size: clamp(2.375rem, 5vw, 3.25rem);
+}
+
+.agreement-page__intro {
+    margin-bottom: 30px;
+    color: var(--color-muted);
+}
+
+.agreement-page__form {
+    display: grid;
+    gap: 24px;
+}
+
+.agreement-page__form .form-group {
+    display: grid;
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .agreement-page__surface {
+        padding: 28px 22px;
+    }
+}

@@ -1,0 +1,35 @@
+<header class="site-header">
+    <div class="container site-header__inner">
+
+        <a href="{% url 'home' %}" class="site-header__brand">
+            GreenBridge
+        </a>
+
+        <nav class="site-header__navigation" aria-label="Основная навигация">
+            <a
+                href="{% url 'home' %}"
+                class="site-header__link"
+                {% if request.resolver_match.url_name == 'home' %}aria-current="page"{% endif %}
+            >Главная</a>
+            <a
+                href="{% url 'product_list' %}"
+                class="site-header__link"
+                {% if request.resolver_match.url_name == 'product_list' %}aria-current="page"{% endif %}
+            >Каталог</a>
+        </nav>
+
+        <div class="site-header__actions">
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="button button--secondary">Личный кабинет</a>
+                <form method="post" action="{% url 'logout' %}" class="site-header__logout">
+                    {% csrf_token %}
+                    <button type="submit" class="button button--outline">Выйти</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="button button--secondary">Войти</a>
+                <a href="{% url 'register' %}" class="button button--primary">Регистрация</a>
+            {% endif %}
+        </div>
+
+    </div>
+</header>

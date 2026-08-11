@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Деловая переписка — GreenBridge{% endblock %}
+
+{% block body_class %}chat-detail-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/chats/detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="chat-detail-page">
+    <div class="container">
+        <div class="chat-detail-page__layout">
+            <section class="chat-detail-page__conversation" aria-labelledby="chat-title">
+                <span class="page-eyebrow">Деловая переписка</span>
+                <h1 id="chat-title">
+                    {% if request.user == conversation.buyer %}
+                        {{ conversation.supplier.company.name }}
+                    {% else %}
+                        {{ conversation.buyer.company.name }}
+                    {% endif %}
+                </h1>
+                <p class="chat-detail-page__subtitle">Обсуждение по товару: {{ conversation.product.title }}</p>
+
+                {% if current_agreement %}
+                    {% if current_agreement.is_completed %}
+                        <span class="chat-detail-page__status">Последняя сделка завершена</span>
+                    {% elif current_agreement.is_cancelled %}
+                        <span class="chat-detail-page__status chat-detail-page__status--muted">Последняя сделка отменена{% if current_agreement.cancelled_by_role %} {{ current_agreement.cancelled_by_role }}{% endif %}</span>
+                    {% elif current_agreement.is_confirmed %}
+                        <span class="chat-detail-page__status">Сделка подтверждена и активна</span>
+                    {% else %}
+                        <span class="chat-detail-page__status">Есть сделка, ожидающая подтверждения</span>
+                    {% endif %}
+                {% else %}
+                    <span class="chat-detail-page__status">Переговоры активны</span>
+                {% endif %}
+
+                <div class="chat-detail-page__messages" aria-live="polite">
+                    {% for msg in chat_messages %}
+                        <article class="chat-detail-page__message{% if msg.is_system %} chat-detail-page__message--system{% endif %}">
+                            <div class="chat-detail-page__message-header">
+                                <strong>
+                                    {% if msg.is_system %}
+                                        Системное событие
+                                    {% elif msg.sender == conversation.buyer %}
+                                        {{ conversation.buyer.company.name }}
+                                    {% elif msg.sender == conversation.supplier %}
+                                        {{ conversation.supplier.company.name }}
+                                    {% else %}
+                                        Участник диалога
+                                    {% endif %}
+                                </strong>
+                                <time datetime="{{ msg.created_at|date:'c' }}">{{ msg.created_at|date:"H:i" }}</time>
+                            </div>
+                            <p>{{ msg.text }}</p>
+                        </article>
+                    {% empty %}
+                        <div class="chat-detail-page__message chat-detail-page__message--system">
+                            <strong>Системное событие</strong>
+                            <p>Переписка создана. Здесь появится история переговоров.</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                {% if messages_page.paginator.num_pages > 1 %}
+                    <nav class="chat-detail-page__message-pagination" aria-label="Страницы переписки">
+                        {% if messages_page.has_next %}
+                            <a href="?messages_page={{ messages_page.next_page_number }}">Ранние сообщения</a>
+                        {% endif %}
+                        <span>Сообщения: {{ messages_page.start_index }}–{{ messages_page.end_index }} из {{ messages_page.paginator.count }}</span>
+                        {% if messages_page.has_previous %}
+                            <a href="?messages_page={{ messages_page.previous_page_number }}">Поздние сообщения</a>
+                        {% endif %}
+                    </nav>
+                {% endif %}
+
+                <form method="post" class="chat-detail-page__composer">
+                    {% csrf_token %}
+                    <label class="visually-hidden" for="{{ form.text.id_for_label }}">Сообщение</label>
+                    {{ form.text }}
+                    {% for error in form.text.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                    <button type="submit" class="button button--primary">Отправить</button>
+                </form>
+            </section>
+
+            <aside class="chat-detail-page__aside">
+                <section class="chat-detail-page__aside-section">
+                    <h2>Новая сделка</h2>
+                    <p>Для этого товара переписка остаётся общей, а каждая повторная закупка оформляется отдельной сделкой внутри диалога.</p>
+                    {% if pending_agreement %}
+                        <button class="button button--primary" disabled>Сначала подтвердите текущую сделку</button>
+                    {% else %}
+                        <a href="{% url 'create_agreement' conversation.id %}" class="button button--primary">
+                            {% if agreements %}
+                                Оформить новую сделку
+                            {% else %}
+                                Зафиксировать первую сделку
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                </section>
+
+                <section class="chat-detail-page__aside-section">
+                    <h2>Текущая сделка</h2>
+                    {% if current_agreement %}
+                        <div class="chat-detail-page__agreement-details">
+                            <div class="chat-detail-page__agreement-line">
+                                <span class="chat-detail-page__agreement-label">Сделка</span>
+                                <strong class="chat-detail-page__agreement-value">№{{ current_agreement.display_number }}</strong>
+                            </div>
+                            <div class="chat-detail-page__agreement-line">
+                                <span class="chat-detail-page__agreement-label">Статус</span>
+                                <strong class="chat-detail-page__agreement-value">{{ current_agreement.status_label }}</strong>
+                            </div>
+                            <div class="chat-detail-page__agreement-line">
+                                <span class="chat-detail-page__agreement-label">Сумма</span>
+                                <strong class="chat-detail-page__agreement-value">{{ current_agreement.amount }} ₽</strong>
+                            </div>
+                            <div class="chat-detail-page__agreement-line">
+                                <span class="chat-detail-page__agreement-label">Дата поставки</span>
+                                <strong class="chat-detail-page__agreement-value">{{ current_agreement.delivery_date|date:"d.m.Y" }}</strong>
+                            </div>
+                            <div class="chat-detail-page__agreement-line chat-detail-page__agreement-line--stacked">
+                                <span class="chat-detail-page__agreement-label">Условия</span>
+                                <strong class="chat-detail-page__agreement-value chat-detail-page__agreement-value--text">{{ current_agreement.terms }}</strong>
+                            </div>
+                        </div>
+
+                        {% if pending_agreement and current_agreement.id == pending_agreement.id %}
+                            {% if can_manage_pending_agreement %}
+                                <form method="post" action="{% url 'confirm_agreement' conversation.id current_agreement.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button button--primary">Подтвердить условия</button>
+                                </form>
+                            {% else %}
+                                <div class="chat-detail-page__notice">Ожидается подтверждение второй стороны.</div>
+                            {% endif %}
+                            {% if can_cancel_current_agreement %}
+                                <form method="post" action="{% url 'cancel_agreement' conversation.id current_agreement.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button button--secondary">Отменить сделку</button>
+                                </form>
+                            {% endif %}
+                        {% elif current_agreement.is_confirmed %}
+                            {% if can_confirm_completion %}
+                                <form method="post" action="{% url 'confirm_complete_agreement' conversation.id current_agreement.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button button--primary">Подтвердить завершение</button>
+                                </form>
+                            {% elif can_request_completion %}
+                                <form method="post" action="{% url 'request_complete_agreement' conversation.id current_agreement.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button button--primary">Запросить завершение</button>
+                                </form>
+                            {% elif completion_requested_by_user %}
+                                <div class="chat-detail-page__notice">Запрос на завершение отправлен. Ждём подтверждение второй стороны.</div>
+                            {% endif %}
+                            {% if can_cancel_current_agreement %}
+                                <form method="post" action="{% url 'cancel_agreement' conversation.id current_agreement.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="button button--secondary">Отменить сделку</button>
+                                </form>
+                            {% endif %}
+                        {% elif current_agreement.is_completed %}
+                            <div class="chat-detail-page__notice chat-detail-page__notice--success">Сделка завершена.</div>
+                        {% elif current_agreement.is_cancelled %}
+                            <div class="chat-detail-page__notice">
+                                Сделка отменена{% if current_agreement.cancelled_by_role %} {{ current_agreement.cancelled_by_role }}{% endif %}.
+                            </div>
+                            {% if current_agreement.cancelled_by_name %}
+                                <p class="chat-detail-page__history-note">Инициатор отмены: {{ current_agreement.cancelled_by_name }}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <p>Сделки по этому диалогу пока нет.</p>
+                    {% endif %}
+                </section>
+
+                {% if agreements %}
+                    <section class="chat-detail-page__aside-section">
+                        <h2>История сделок</h2>
+                        <div class="chat-detail-page__agreement-history">
+                            {% for agreement in agreements %}
+                                <article class="chat-detail-page__history-item">
+                                    <div class="chat-detail-page__history-header">
+                                        <strong class="chat-detail-page__history-number">№{{ agreement.display_number }}</strong>
+                                        <span class="chat-detail-page__history-status">{{ agreement.status_label }}</span>
+                                    </div>
+                                    <div class="chat-detail-page__history-meta">
+                                        <span>{{ agreement.amount }} ₽</span>
+                                        <span>{{ agreement.delivery_date|date:"d.m.Y" }}</span>
+                                    </div>
+                                    {% if agreement.is_cancelled %}
+                                        <p class="chat-detail-page__history-note">
+                                            Отменена{% if agreement.cancelled_by_role %} {{ agreement.cancelled_by_role }}{% endif %}{% if agreement.cancelled_by_name %}: {{ agreement.cancelled_by_name }}{% endif %}.
+                                        </p>
+                                    {% endif %}
+                                    {% if agreement.is_completed and not agreement.user_has_review %}
+                                        <a href="{% url 'leave_review' agreement.id %}" class="button button--secondary">Оставить отзыв</a>
+                                    {% elif agreement.is_completed %}
+                                        <p class="chat-detail-page__history-note">Отзыв по этой сделке уже оставлен.</p>
+                                    {% endif %}
+                                </article>
+                            {% endfor %}
+                        </div>
+                    </section>
+                {% endif %}
+
+                <section class="chat-detail-page__aside-section">
+                    <h2>Роль переговоров</h2>
+                    <p>История сообщений и список сделок сохраняют полный контекст сотрудничества между покупателем и поставщиком по одному товару.</p>
+                </section>
+            </aside>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,117 @@
+.form-surface {
+    padding: 34px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-large);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-surface);
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label,
+.filter-field label,
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+}
+
+.form-field input:not([type='checkbox']):not([type='file']),
+.form-field select,
+.form-field textarea,
+.filter-field input,
+.filter-field select,
+.form-group input,
+.form-group textarea,
+.form-fields input,
+.form-fields select,
+.form-fields textarea {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    background: var(--color-surface);
+    color: var(--color-text);
+    padding: 14px 16px;
+}
+
+.form-field textarea,
+.form-group textarea,
+.form-fields textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus,
+.filter-field input:focus,
+.filter-field select:focus,
+.form-group input:focus,
+.form-group textarea:focus,
+.form-fields input:focus,
+.form-fields select:focus,
+.form-fields textarea:focus {
+    border-color: var(--color-brand);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(47, 111, 78, 0.1);
+}
+
+.field-error,
+.form-errors {
+    color: var(--color-danger);
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.form-errors {
+    margin-bottom: 18px;
+    padding: 16px 18px;
+    border: 1px solid #ffd3d3;
+    border-radius: 20px;
+    background: var(--color-danger-soft);
+}
+
+.form-errors p {
+    margin: 0;
+}
+
+.form-errors p + p {
+    margin-top: 8px;
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 24px;
+}
+
+.file-upload-simple input[type='file'] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    background: var(--color-surface);
+}
+
+.file-upload-simple input[type='file']::file-selector-button {
+    min-height: 38px;
+    margin-right: 14px;
+    padding-inline: 16px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--color-brand);
+    color: var(--color-surface);
+    font: inherit;
+    font-weight: 700;
+}
+
+.current-file-text,
+.form-field small {
+    display: block;
+    margin-top: 8px;
+    color: var(--color-muted);
+    font-size: 0.8125rem;
+}

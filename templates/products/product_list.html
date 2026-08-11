@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Каталог продукции — GreenBridge{% endblock %}
+
+{% block body_class %}catalog-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/products/catalog.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="catalog-page__intro">
+    <div class="container">
+        <span class="page-eyebrow">Каталог продукции</span>
+        <h1>Найдите товары и поставщиков для вашего бизнеса</h1>
+        <p>
+            Сравнивайте предложения, условия поставки и профили компаний.
+        </p>
+    </div>
+</section>
+
+<section class="catalog-page__content">
+    <div class="container catalog-page__layout">
+        <aside class="catalog-page__filter-panel" aria-labelledby="catalog-filter-title">
+            <h2 id="catalog-filter-title">Фильтры</h2>
+
+            <form method="get" class="catalog-page__filters">
+                {% if catalog_filter.form.non_field_errors %}
+                    <div class="form-errors" role="alert">
+                        {{ catalog_filter.form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="filter-field">
+                    <label for="{{ catalog_filter.form.q.id_for_label }}">Поиск товара</label>
+                    {{ catalog_filter.form.q }}
+                    {% for error in catalog_filter.form.q.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="filter-field">
+                    <label for="{{ catalog_filter.form.category.id_for_label }}">Категория</label>
+                    {{ catalog_filter.form.category }}
+                    {% for error in catalog_filter.form.category.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="filter-field">
+                    <label for="{{ catalog_filter.form.region.id_for_label }}">Регион</label>
+                    {{ catalog_filter.form.region }}
+                    {% for error in catalog_filter.form.region.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="filter-field">
+                    <label for="{{ catalog_filter.form.company.id_for_label }}">Поставщик</label>
+                    {{ catalog_filter.form.company }}
+                    {% for error in catalog_filter.form.company.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+
+                <fieldset class="filter-field catalog-page__price-range">
+                    <legend>Цена</legend>
+                    <div class="catalog-page__price-inputs">
+                        <div>
+                            <label for="{{ catalog_filter.form.price_min.id_for_label }}">От</label>
+                            {{ catalog_filter.form.price_min }}
+                        </div>
+                        <div>
+                            <label for="{{ catalog_filter.form.price_max.id_for_label }}">До</label>
+                            {{ catalog_filter.form.price_max }}
+                        </div>
+                    </div>
+                    {% for error in catalog_filter.form.price_min.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                    {% for error in catalog_filter.form.price_max.errors %}
+                        <p class="field-error">{{ error }}</p>
+                    {% endfor %}
+                </fieldset>
+
+                <div class="filter-field">
+                    <label for="{{ catalog_filter.form.sort.id_for_label }}">Сортировка</label>
+                    {{ catalog_filter.form.sort }}
+                </div>
+
+                <button class="button button--primary" type="submit">Применить</button>
+                <a href="{% url 'product_list' %}" class="button button--secondary">Сбросить</a>
+            </form>
+        </aside>
+
+        <div class="catalog-page__results">
+            <div class="catalog-page__result-summary">
+                <h2>Доступные предложения</h2>
+                <p>Найдено: {{ page_obj.paginator.count }}</p>
+            </div>
+
+            <div class="catalog-page__list">
+                {% for product in page_obj %}
+                    <article class="catalog-page__offer">
+                        <div class="catalog-page__image">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.title }}" loading="lazy">
+                            {% else %}
+                                <span>Нет изображения</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="catalog-page__offer-content">
+                            <span class="catalog-page__category">
+                                {{ product.category.name|default:'Без категории' }}
+                            </span>
+                            <h3>{{ product.title }}</h3>
+                            <p class="catalog-page__description">{{ product.description|truncatechars:120 }}</p>
+
+                            <div class="catalog-page__meta">
+                                <a href="{% url 'company_profile' product.company.id %}">
+                                    {{ product.company.name }}
+                                </a>
+                                <span>{{ product.region }}</span>
+                            </div>
+
+                            <p class="catalog-page__price">
+                                {{ product.price }} ₽ / {{ product.get_unit_display }}
+                            </p>
+
+                            <div class="catalog-page__actions">
+                                <a href="{% url 'product_detail' product.id %}" class="button button--primary">
+                                    Подробнее
+                                </a>
+                                <a href="{% url 'company_profile' product.company.id %}" class="button button--secondary">
+                                    Профиль компании
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <section class="empty-state">
+                        <h2>Ничего не найдено</h2>
+                        <p>Попробуйте изменить параметры фильтрации.</p>
+                        <a href="{% url 'product_list' %}" class="button button--primary">Сбросить фильтры</a>
+                    </section>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination" aria-label="Страницы каталога">
+                    {% if page_obj.has_previous %}
+                        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Назад</a>
+                    {% endif %}
+
+                    <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Вперёд</a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

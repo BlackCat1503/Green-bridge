@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Аналитика — GreenBridge{% endblock %}
+
+{% block body_class %}analytics-page{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/pages/users/analytics.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<section class="analytics-page analytics-page--{{ role }}">
+    <div class="container">
+
+        <div class="page-head">
+            <span class="page-eyebrow">Аналитика</span>
+            <h1>{{ analytics_title }}</h1>
+            <p>{{ analytics_description }}</p>
+        </div>
+
+        {% if role == 'supplier' %}
+            <div class="analytics-page__metrics">
+                <div class="analytics-page__metric">
+                    <span>Активные предложения</span>
+                    <strong>{{ active_products }}</strong>
+                </div>
+
+                <div class="analytics-page__metric">
+                    <span>Переговоры</span>
+                    <strong>{{ total_conversations }}</strong>
+                </div>
+
+                <div class="analytics-page__metric">
+                    <span>Завершённые сделки</span>
+                    <strong>{{ completed_agreements }}</strong>
+                </div>
+
+                <div class="analytics-page__metric">
+                    <span>Выручка по завершённым сделкам</span>
+                    <strong>{{ completed_amount }}</strong>
+                </div>
+            </div>
+
+            <div class="analytics-layout">
+                <section class="analytics-panel">
+                    <h2>Воронка взаимодействий</h2>
+
+                    <div class="analytics-table">
+                        <div class="analytics-row">
+                            <div>
+                                <strong>1. Активные предложения</strong>
+                                <span>Товары, доступные в каталоге</span>
+                            </div>
+                            <div>{{ active_products }}</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>2. Переговоры</strong>
+                                <span>Интерес со стороны покупателей</span>
+                            </div>
+                            <div>{{ total_conversations }}</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>3. Завершённые сделки</strong>
+                                <span>Сделки, прошедшие полный цикл до завершения</span>
+                            </div>
+                            <div>{{ completed_agreements }}</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="analytics-panel">
+                    <h2>Конверсия и качество</h2>
+
+                    <div class="analytics-table">
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Предложения с интересом</strong>
+                                <span>Доля активных товаров, по которым начались переговоры</span>
+                            </div>
+                            <div>{{ offer_conversion }}%</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Конверсия в завершение</strong>
+                                <span>Сколько переговоров доходят до завершённой сделки</span>
+                            </div>
+                            <div>{{ deal_conversion }}%</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Средняя оценка</strong>
+                                <span>По отзывам после завершённых сделок</span>
+                            </div>
+                            <div>{% if average_rating %}{{ average_rating }} ★{% else %}—{% endif %}</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Средняя сумма сделки</strong>
+                                <span>По завершённым сделкам</span>
+                            </div>
+                            <div>{% if average_deal_amount %}{{ average_deal_amount }}{% else %}—{% endif %}</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="analytics-layout">
+                <section class="analytics-panel">
+                    <h2>Топ товаров по спросу</h2>
+
+                    {% if top_products_chart %}
+                        <div class="demand-chart">
+                            {% for product in top_products_chart %}
+                                <div class="demand-chart-row">
+                                    <div class="demand-chart-head">
+                                        <div>
+                                            <strong>{{ product.title }}</strong>
+                                            <span>{{ product.category }}</span>
+                                        </div>
+                                        <div class="demand-chart-value">
+                                            {{ product.conversations_count }} / {{ product.deals_count }}
+                                        </div>
+                                    </div>
+
+                                    <progress class="demand-chart-track demand-chart-bar" value="{{ product.percentage }}" max="100"></progress>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="review-empty">
+                            Пока нет данных по спросу на предложения.
+                        </div>
+                    {% endif %}
+                </section>
+
+                <section class="analytics-panel">
+                    <h2>География спроса</h2>
+
+                    {% if demand_regions %}
+                        <div class="analytics-table">
+                            {% for region in demand_regions %}
+                                <div class="analytics-row">
+                                    <div>
+                                        <strong>{{ region.buyer__company__region }}</strong>
+                                        <span>Регион покупателей</span>
+                                    </div>
+                                    <div>{{ region.total }} обращений</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="review-empty">
+                            География появится после первых переговоров с покупателями.
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+
+            <section class="analytics-panel">
+                <h2>Популярные категории</h2>
+
+                {% if category_demand %}
+                    <div class="analytics-table">
+                        {% for item in category_demand %}
+                            <div class="analytics-row">
+                                <div>
+                                    <strong>{{ item.category__name|default:"Без категории" }}</strong>
+                                    <span>Спрос и завершённые сделки</span>
+                                </div>
+                                <div>{{ item.conversations_count }} переговоров / {{ item.deals_count }} сделок</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="review-empty">
+                        Пока нет данных по категориям.
+                    </div>
+                {% endif %}
+            </section>
+        {% else %}
+            <div class="analytics-page__metrics">
+                <div class="analytics-page__metric">
+                    <span>Переговоры</span>
+                    <strong>{{ total_conversations }}</strong>
+                </div>
+
+                <div class="analytics-page__metric">
+                    <span>Завершённые сделки</span>
+                    <strong>{{ completed_agreements }}</strong>
+                </div>
+
+                <div class="analytics-page__metric">
+                    <span>Поставщики в работе</span>
+                    <strong>{{ suppliers_count }}</strong>
+                </div>
+
+                <div class="analytics-page__metric">
+                    <span>Сумма завершённых закупок</span>
+                    <strong>{{ completed_amount }}</strong>
+                </div>
+            </div>
+
+            <div class="analytics-layout">
+                <section class="analytics-panel">
+                    <h2>Закупки по категориям</h2>
+
+                    {% if category_spend %}
+                        <div class="analytics-table">
+                            {% for category in category_spend %}
+                                <div class="analytics-row">
+                                    <div>
+                                        <strong>{{ category.conversation__product__category__name|default:"Без категории" }}</strong>
+                                        <span>{{ category.deals_count }} завершённых сделок</span>
+                                    </div>
+                                    <div>{{ category.total_amount }}</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="review-empty">
+                            Структура закупок появится после первых завершённых сделок.
+                        </div>
+                    {% endif %}
+                </section>
+
+                <section class="analytics-panel">
+                    <h2>Ключевые показатели закупок</h2>
+
+                    <div class="analytics-table">
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Конверсия в завершение</strong>
+                                <span>Доля переговоров, дошедших до завершённой сделки</span>
+                            </div>
+                            <div>{{ deal_conversion }}%</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Средний чек</strong>
+                                <span>Средняя сумма завершённой сделки</span>
+                            </div>
+                            <div>{% if average_deal_amount %}{{ average_deal_amount }}{% else %}—{% endif %}</div>
+                        </div>
+
+                        <div class="analytics-row">
+                            <div>
+                                <strong>Средняя оценка партнёров</strong>
+                                <span>По отзывам после завершённых сделок</span>
+                            </div>
+                            <div>{% if average_rating %}{{ average_rating }} ★{% else %}—{% endif %}</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="analytics-layout">
+                <section class="analytics-panel">
+                    <h2>Сравнение поставщиков</h2>
+
+                    {% if supplier_comparison %}
+                        <div class="analytics-table">
+                            {% for supplier in supplier_comparison %}
+                                <div class="analytics-row">
+                                    <div>
+                                        <strong>{{ supplier.supplier__company__name }}</strong>
+                                        <span>{{ supplier.supplier__company__region|default:"Регион не указан" }}</span>
+                                    </div>
+                                    <div>
+                                        {{ supplier.completed_deals }} сделок
+                                        {% if supplier.supplier_rating %}
+                                            / {{ supplier.supplier_rating|floatformat:1 }} ★
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="review-empty">
+                            Пока нет данных для сравнения поставщиков.
+                        </div>
+                    {% endif %}
+                </section>
+
+                <section class="analytics-panel">
+                    <h2>География партнёров</h2>
+
+                    {% if partner_regions %}
+                        <div class="analytics-table">
+                            {% for region in partner_regions %}
+                                <div class="analytics-row">
+                                    <div>
+                                        <strong>{{ region.supplier__company__region }}</strong>
+                                        <span>Регион поставщиков</span>
+                                    </div>
+                                    <div>{{ region.total }} переговоров</div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="review-empty">
+                            География появится после первых переговоров с поставщиками.
+                        </div>
+                    {% endif %}
+                </section>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

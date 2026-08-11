@@ -1,0 +1,20 @@
+<article class="review-item">
+    <div class="review-item__head">
+        <div class="review-item__author">
+            <div class="review-item__avatar" aria-hidden="true">
+                {{ review.author.company.name|slice:":2" }}
+            </div>
+            <div class="review-item__author-info">
+                <strong>{{ review.author.company.name }}</strong>
+                <small>{{ review.created_at|date:"d.m.Y H:i" }}</small>
+            </div>
+        </div>
+        <span class="review-item__rating">{{ review.rating }} ★</span>
+    </div>
+
+    {% if show_product and review.product %}
+        <small class="review-item__product">Товар: {{ review.product.title }}</small>
+    {% endif %}
+
+    <p class="review-item__text">{{ review.text|default:"Комментарий не указан." }}</p>
+</article>
