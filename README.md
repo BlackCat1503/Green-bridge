@@ -59,14 +59,29 @@ pip install -r requirements.txt
 
 ### 3. Настройка почты
 
-Регистрация использует отправку кода подтверждения на email. Для локального запуска есть два пути:
+Регистрация использует отправку кода подтверждения на email. По умолчанию включён
+консольный backend: письмо не отправляется, а код подтверждения выводится в
+терминал, где запущен Django.
 
-1. Указать рабочие SMTP-настройки в `config/settings.py`.
-2. Для разработки временно переключить backend на консольный:
+Чтобы включить реальную отправку через SMTP, задайте переменные окружения перед
+запуском проекта. Пример для PowerShell и почты Mail.ru:
 
-```python
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+```powershell
+$env:EMAIL_BACKEND="django.core.mail.backends.smtp.EmailBackend"
+$env:EMAIL_HOST="smtp.mail.ru"
+$env:EMAIL_PORT="587"
+$env:EMAIL_USE_TLS="true"
+$env:EMAIL_USE_SSL="false"
+$env:EMAIL_HOST_USER="address@mail.ru"
+$env:EMAIL_HOST_PASSWORD="password"
+$env:DEFAULT_FROM_EMAIL="address@mail.ru"
+python manage.py runserver
 ```
+
+Используйте пароль приложения, созданный в настройках почтового сервиса, а не
+пароль от почтового аккаунта. Для другого провайдера замените адрес SMTP-сервера,
+порт и параметры TLS/SSL согласно его документации. Не добавляйте реальные
+логины и пароли в `config/settings.py` или в Git.
 
 Тогда код подтверждения будет выводиться в терминал вместо отправки письма.
 
@@ -110,15 +125,3 @@ python manage.py check
 python manage.py test
 ```
 
-## Миграции и пустая база данных
-
-Миграции не хранятся в репозитории. Для чистой или новой базы Django создаёт их
-автоматически из текущих моделей.
-
-Если вы осознанно очищаете локальную базу, сначала создайте резервную копию, затем
-создайте пустую базу с теми же параметрами подключения и выполните:
-
-```powershell
-python manage.py makemigrations
-python manage.py migrate
-```
